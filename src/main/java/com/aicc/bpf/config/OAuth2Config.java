@@ -43,6 +43,7 @@ public class OAuth2Config {
     public static final String CLIENT_SECRET = "123456";
     //访问客户端ID
     public static final String CLIENT_ID ="client_1";
+    public static final String CLIENT_ID2 ="client_2";
     //鉴权模式
     public static final String GRANT_TYPE[] = {"password","refresh_token"};
 
@@ -105,6 +106,12 @@ public class OAuth2Config {
             //配置客户端，使用密码模式验证鉴权
             clients.inMemory()
                     .withClient(CLIENT_ID)
+                    //密码模式及refresh_token模式
+                    .authorizedGrantTypes(GRANT_TYPE[0], GRANT_TYPE[1])
+                    .scopes("all")
+                    .secret(finalSecret)
+                    .and()
+                    .withClient(CLIENT_ID2)
                     //密码模式及refresh_token模式
                     .authorizedGrantTypes(GRANT_TYPE[0], GRANT_TYPE[1])
                     .scopes("all")

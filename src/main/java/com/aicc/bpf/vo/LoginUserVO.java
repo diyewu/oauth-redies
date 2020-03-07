@@ -12,15 +12,11 @@ public class LoginUserVO extends Base {
      */
     private Integer id;
 
-    /**
-     * 用户账号
-     */
-    private String account;
 
     /**
      * 用户名
      */
-    private String name;
+    private String userName;
 
     /**
      * 用户密码
@@ -63,11 +59,20 @@ public class LoginUserVO extends Base {
      */
     private String refreshTokenExpiration;
 
-
     /**
      * refreshToken码
      */
     private String refreshToken;
+
+    /**
+     * 客户端id
+     */
+    private String appId;
+
+    /**
+     * 客户端secret
+     */
+    private String appSecret;
 
     public Integer getId() {
         return id;
@@ -77,20 +82,12 @@ public class LoginUserVO extends Base {
         this.id = id;
     }
 
-    public String getAccount() {
-        return account;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
@@ -165,12 +162,27 @@ public class LoginUserVO extends Base {
         this.refreshToken = refreshToken;
     }
 
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public String getAppSecret() {
+        return appSecret;
+    }
+
+    public void setAppSecret(String appSecret) {
+        this.appSecret = appSecret;
+    }
+
     @Override
     public String toString() {
         return "LoginUserVO{" +
                "id=" + id +
-               ", account='" + account + '\'' +
-               ", name='" + name + '\'' +
+               ", userName='" + userName + '\'' +
                ", password='" + password + '\'' +
                ", accessToken='" + accessToken + '\'' +
                ", expired=" + expired +
@@ -180,6 +192,8 @@ public class LoginUserVO extends Base {
                ", tokenType='" + tokenType + '\'' +
                ", refreshTokenExpiration='" + refreshTokenExpiration + '\'' +
                ", refreshToken='" + refreshToken + '\'' +
+               ", appId='" + appId + '\'' +
+               ", appSecret='" + appSecret + '\'' +
                '}';
     }
 }

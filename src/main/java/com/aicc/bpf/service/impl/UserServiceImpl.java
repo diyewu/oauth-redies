@@ -156,16 +156,64 @@ public class UserServiceImpl implements UserService {
         LoginUserVO loginUserVO = new LoginUserVO();
 
         AuthUser userPO = authUserMapper.selectByUserName(loginUserDTO.getUserName());
-        BeanUtils.copyPropertiesIgnoreNull(userPO, loginUserVO);
+        //TODO 补充缓存信息
         loginUserVO.setPassword(userPO.getPassword());
+        loginUserVO.setUserName(userPO.getUser_name());
         loginUserVO.setAccessToken(token.getValue());
         loginUserVO.setAccessTokenExpiresIn(token.getExpiresIn());
-//        loginUserVO.setAccessTokenExpiration(token.getExpiration());
-//        loginUserVO.setExpired(token.isExpired());
-//        loginUserVO.setScope(token.getScope());
-//        loginUserVO.setTokenType(token.getToken_type());
         loginUserVO.setRefreshToken(token.getRefreshToken().getValue());
-//        loginUserVO.setRefreshTokenExpiration(token.getRefreshToken().getExpiration());
+
+        loginUserVO.setAppId(CLIENT_ID);
+        loginUserVO.setAppSecret(CLIENT_SECRET);
+        //存储登录的用户
+        redisUtil.set(loginUserVO.getAccessToken(),loginUserVO,TimeUnit.HOURS.toSeconds(1));
+        return loginUserVO;
+    }
+
+    @Override
+    public LoginUserVO SSOLogin(LoginUserDTO loginUserDTO) {
+        MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<>();
+        paramMap.add("client_id", loginUserDTO.getAppId());
+        paramMap.add("client_secret", loginUserDTO.getAppSecret());
+        paramMap.add("username", loginUserDTO.getUserName());
+        paramMap.add("password", loginUserDTO.getPassword());
+        paramMap.add("grant_type", GRANT_TYPE[0]);
+        Token token = null;
+        try {
+            //因为oauth2本身自带的登录接口是"/oauth/token"，并且返回的数据类型不能按我们想要的去返回
+            //但是我的业务需求是，登录接口是"user/login"，由于我没研究过要怎么去修改oauth2内部的endpoint配置
+            //所以这里我用restTemplate(HTTP客户端)进行一次转发到oauth2内部的登录接口，比较简单粗暴
+            token = restTemplate.postForObject(serverConfig.getUrl() + UrlEnum.LOGIN_URL.getUrl(), paramMap, Token.class);
+            LoginUserVO loginUserVO = redisUtil.get(token.getValue(), LoginUserVO.class);
+            if(loginUserVO != null){
+                //登录的时候，判断该用户是否已经登录过了
+                //如果redis里面已经存在该用户已经登录过了的信息
+                //我这边要刷新一遍token信息，不然，它会返回上一次还未过时的token信息给你
+                //不便于做单点维护
+                token = oauthRefreshToken(loginUserVO.getRefreshToken());
+                redisUtil.deleteCache(loginUserVO.getAccessToken());
+            }
+        } catch (RestClientException e) {
+            try {
+                e.printStackTrace();
+                //此处应该用自定义异常去返回，在这里我就不去具体实现了
+                //throw new Exception("username or password error");
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+        //这里我拿到了登录成功后返回的token信息之后，我再进行一层封装，最后返回给前端的其实是LoginUserVO
+        LoginUserVO loginUserVO = new LoginUserVO();
+
+        AuthUser userPO = authUserMapper.selectByUserName(loginUserDTO.getUserName());
+        //TODO 补充缓存信息
+        loginUserVO.setPassword(userPO.getPassword());
+        loginUserVO.setUserName(userPO.getUser_name());
+        loginUserVO.setAccessToken(token.getValue());
+        loginUserVO.setAccessTokenExpiresIn(token.getExpiresIn());
+        loginUserVO.setRefreshToken(token.getRefreshToken().getValue());
+        loginUserVO.setAppId(loginUserDTO.getAppId());
+        loginUserVO.setAppSecret(loginUserDTO.getAppSecret());
         //存储登录的用户
         redisUtil.set(loginUserVO.getAccessToken(),loginUserVO,TimeUnit.HOURS.toSeconds(1));
         return loginUserVO;
@@ -174,8 +222,6 @@ public class UserServiceImpl implements UserService {
     /**
      * @description oauth2客户端刷新token
      * @param refreshToken
-     * @date 2019/03/05 14:27:22
-
      * @return
      */
     private Token oauthRefreshToken(String refreshToken) {

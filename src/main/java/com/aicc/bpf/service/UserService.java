@@ -42,4 +42,11 @@ public interface UserService {
      */
     LoginUserVO login(LoginUserDTO loginUserDTO);
 
+    /**
+     * @description 三方TOKEN申请（单点登录）
+     * @return
+     */
+    LoginUserVO SSOLogin(LoginUserDTO loginUserDTO);
+
+
 }

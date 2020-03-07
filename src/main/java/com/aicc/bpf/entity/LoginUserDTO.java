@@ -18,6 +18,16 @@ public class LoginUserDTO {
      */
     private String password;
 
+    /**
+     * 客户端ID
+     */
+    private String appId;
+
+    /**
+     * 客户端密钥
+     */
+    private String appSecret;
+
 
     public String getPassword() {
         return password;
@@ -34,5 +44,21 @@ public class LoginUserDTO {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public String getAppSecret() {
+        return appSecret;
+    }
+
+    public void setAppSecret(String appSecret) {
+        this.appSecret = appSecret;
     }
 }

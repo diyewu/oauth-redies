@@ -1,6 +1,6 @@
 package com.aicc.bpf.config;
 
-import com.aicc.bpf.config.AjaxSecurity.*;
+import com.aicc.bpf.config.AjaxSecurity.SelfAuthenticationProvider;
 import com.aicc.bpf.dao.AuthUserMapper;
 import com.aicc.bpf.domain.CustomUserDetail;
 import com.aicc.bpf.entity.AuthUser;
@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,7 +16,6 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
@@ -57,11 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     @Override
     protected UserDetailsService userDetailsService() {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         return new UserDetailsService(){
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//                User user = userRepository.findUserByAccount(username);
                 AuthUser authUser = authUserMapper.selectByUserName(username);
                 if(authUser == null){
                     return null;

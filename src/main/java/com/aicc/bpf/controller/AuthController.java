@@ -6,18 +6,22 @@ import com.aicc.bpf.entity.LoginUserDTO;
 import com.aicc.bpf.service.RoleService;
 import com.aicc.bpf.service.UserService;
 import com.aicc.bpf.utils.AssertUtils;
+import com.aicc.bpf.utils.RedisUtil;
 import com.aicc.bpf.utils.ResultUtils;
 import com.aicc.bpf.vo.LoginUserVO;
 import com.aicc.bpf.vo.ResponseVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * @description 用户权限管理
@@ -34,6 +38,9 @@ public class AuthController {
 
     @Autowired
     private RedisTokenStore redisTokenStore;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * @description 添加用户
@@ -85,12 +92,9 @@ public class AuthController {
      */
     @PostMapping("user/login")
     public ResponseResult login(LoginUserDTO loginUserDTO) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
         LoginUserVO login = userService.login(loginUserDTO);
         return ResultUtils.success(login);
     }
-
-
     /**
      * @description 用户注销
      * @param authorization
@@ -111,5 +115,42 @@ public class AuthController {
         return roleService.findAllRoleVO();
     }
 
+    /**
+     * @description 用户登录
+     * @param loginUserDTO
+     * @return
+     */
+    @PostMapping("user/SSOLogin")
+    public ResponseResult SSOLogin(LoginUserDTO loginUserDTO) throws JsonProcessingException {
+        /**
+         * 根据当前登录的用户token获取新的客户端token，相当于单点登录
+         * 利用OAuth2.0的客户端密码模式
+         */
+        ObjectMapper objectMapper = new ObjectMapper();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object details = authentication.getDetails();
+
+        String tokenValue = "";
+        if(details != null){
+            String s = objectMapper.writeValueAsString(details);
+            Map<String,Object> map = objectMapper.readValue(s, Map.class);
+            tokenValue = map.get("tokenValue") == null ? "" : (String) map.get("tokenValue");
+        }
+        if(StringUtils.isNotBlank(tokenValue)){
+            LoginUserVO loginUserVO = redisUtil.get(tokenValue, LoginUserVO.class);
+            loginUserDTO.setUserName(loginUserVO.getUserName());
+            loginUserDTO.setPassword(loginUserVO.getPassword());
+            loginUserDTO.setAppId(loginUserDTO.getAppId());
+            loginUserDTO.setAppSecret(getAppSecret(loginUserDTO.getAppId()));
+        }
+        LoginUserVO login = userService.SSOLogin(loginUserDTO);
+        return ResultUtils.success(login);
+    }
+
+    private String getAppSecret(String appId){
+        String appSecret = "123456";
+        //TODO 补充获取appSecret 逻辑
+        return appSecret;
+    }
 
 }

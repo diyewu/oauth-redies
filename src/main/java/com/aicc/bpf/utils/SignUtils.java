@@ -9,14 +9,14 @@ import java.util.*;
 public class SignUtils {
 
     //TODO 增加所有客户端，作为集合
-    private static final String secretKey = "e10adc3949ba59abbe56e057f20f883f";
-    private static final String appId = "BC554";
+    private static final String secretKey = "123456";
+    private static final String appId = "client_2";
 
     public static void main(String[] args) {
         HashMap<String, String> signMap = new HashMap<>();
         String curtime = String.valueOf(new Date().getTime() / 1000);
         System.out.println(curtime);
-        signMap.put("appid", appId);
+        signMap.put("appId", appId);
         signMap.put("timestamp", curtime);
         System.out.println("签名:" + getSign(signMap, secretKey));
     }
@@ -30,9 +30,9 @@ public class SignUtils {
      */
     public static Boolean checkSign(HttpServletRequest request) {
         Boolean flag = false;
-        String appid = request.getParameter("appid");//appid
-        if (!appId.equals(appid)) {
-            throw new RuntimeException("appid is invalid");
+        String requestAppId = request.getParameter("appId");//appid
+        if (!appId.equals(requestAppId)) {
+            throw new RuntimeException("appId is invalid");
         }
         String sign = request.getParameter("sign");//签名
         String timestamp = request.getParameter("timestamp");//时间戳
