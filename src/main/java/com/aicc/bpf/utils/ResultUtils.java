@@ -20,8 +20,8 @@ public class ResultUtils {
         return new ResponseResult<T>().setCode(ResultCodeEnum.SUCCESS).setMsg(SUCCESS).setData(data);
     }
 
-    public static <T> ResponseResult<T> success(String msg) {
-        return new ResponseResult<T>().setCode(ResultCodeEnum.SUCCESS).setMsg(msg);
+    public static ResponseResult success(String msg) {
+        return new ResponseResult().setCode(ResultCodeEnum.SUCCESS).setMsg(msg);
     }
 
     public static <T> ResponseResult<T> success(ResultCodeEnum codeEnum, T data) {

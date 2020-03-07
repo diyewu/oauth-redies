@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service
+//@Service
 public class SecurityUserService implements UserDetailsService {
 
 
@@ -18,7 +18,7 @@ public class SecurityUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        //TODO 补全用户信息
+        //TODO 补全用户权限信息
         AuthUser authUser = authUserMapper.selectByUserName(name);
         if(authUser == null){
             return null;

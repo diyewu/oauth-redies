@@ -1,12 +1,12 @@
 package com.aicc.bpf.domain;
 
 import com.aicc.bpf.domain.bean.RefreshTokenBean;
-
-import java.util.List;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * @description oauth2客户端token参数
  */
+@JsonIgnoreProperties
 public class Token {
 
     /**
@@ -39,8 +39,16 @@ public class Token {
     /**
      * 使用范围
      */
-    private List<String> scope;
+    private Object scope;
 
+
+    public Object getScope() {
+        return scope;
+    }
+
+    public void setScope(Object scope) {
+        this.scope = scope;
+    }
 
     public String getExpiration() {
         return expiration;
@@ -88,13 +96,5 @@ public class Token {
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    public List<String> getScope() {
-        return scope;
-    }
-
-    public void setScope(List<String> scope) {
-        this.scope = scope;
     }
 }

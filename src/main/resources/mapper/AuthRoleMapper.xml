@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.aicc.bpf.entity.AuthRole">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="description" jdbcType="VARCHAR" property="description" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="role_name" jdbcType="VARCHAR" property="role_name" />
     <result column="role" jdbcType="VARCHAR" property="role" />
     <result column="created_time" jdbcType="TIMESTAMP" property="created_time" />
     <result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
@@ -14,7 +14,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.aicc.bpf.entity.AuthRole">
-    insert into auth_role (id, description, `name`, 
+    insert into auth_role (id, description, role_name,
       `role`, created_time, update_time
       )
     values (#{id,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
@@ -24,19 +24,19 @@
   <update id="updateByPrimaryKey" parameterType="com.aicc.bpf.entity.AuthRole">
     update auth_role
     set description = #{description,jdbcType=VARCHAR},
-      `name` = #{name,jdbcType=VARCHAR},
+      role_name = #{name,jdbcType=VARCHAR},
       `role` = #{role,jdbcType=VARCHAR},
       created_time = #{created_time,jdbcType=TIMESTAMP},
       update_time = #{update_time,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select id, description, `name`, `role`, created_time, update_time
+    select id, description, role_name, `role`, created_time, update_time
     from auth_role
     where id = #{id,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap">
-    select id, description, `name`, `role`, created_time, update_time
+    select id, description, role_name, `role`, created_time, update_time
     from auth_role
   </select>
 </mapper>

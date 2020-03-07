@@ -3,6 +3,7 @@ package com.aicc.bpf.service;
 
 import com.aicc.bpf.entity.AuthUser;
 import com.aicc.bpf.entity.LoginUserDTO;
+import com.aicc.bpf.vo.LoginUserVO;
 import com.aicc.bpf.vo.ResponseVO;
 
 import java.util.List;
@@ -33,12 +34,12 @@ public interface UserService {
      * @description 获取所有用户列表VO
      * @return
      */
-    ResponseVO<List<AuthUser>> findAllUserVO();
+    List<AuthUser> findAllUserVO();
 
     /**
      * @description 用户登录
      * @return
      */
-    ResponseVO login(LoginUserDTO loginUserDTO);
+    LoginUserVO login(LoginUserDTO loginUserDTO);
 
 }

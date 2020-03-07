@@ -17,7 +17,7 @@ public class AuthUser implements Serializable {
     private Date create_time;
 
     private Date update_time;
-    private AuthRole role;
+    private AuthRole role = new AuthRole();
 
     private static final long serialVersionUID = 1L;
 

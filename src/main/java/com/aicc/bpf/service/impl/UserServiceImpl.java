@@ -17,6 +17,7 @@ import com.aicc.bpf.utils.SortableUUID;
 import com.aicc.bpf.vo.LoginUserVO;
 import com.aicc.bpf.vo.ResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -105,7 +106,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseVO<List<AuthUser>> findAllUserVO() {
+    public List<AuthUser> findAllUserVO() {
         List<AuthUser> userPOList = authUserMapper.selectAll();
         List<AuthUser> userVOList = new ArrayList<>();
         userPOList.forEach(userPO->{
@@ -116,11 +117,11 @@ public class UserServiceImpl implements UserService {
             userVO.setRole(roleVO);
             userVOList.add(userVO);
         });
-        return ResponseVO.success(userVOList);
+        return userVOList;
     }
 
     @Override
-    public ResponseVO login(LoginUserDTO loginUserDTO) {
+    public LoginUserVO login(LoginUserDTO loginUserDTO) {
         MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<>();
         paramMap.add("client_id", CLIENT_ID);
         paramMap.add("client_secret", CLIENT_SECRET);
@@ -153,23 +154,21 @@ public class UserServiceImpl implements UserService {
         }
         //这里我拿到了登录成功后返回的token信息之后，我再进行一层封装，最后返回给前端的其实是LoginUserVO
         LoginUserVO loginUserVO = new LoginUserVO();
-//        List<AuthUser> authUsers = authUserMapper.selectAll();
-//        System.out.println(authUsers);
 
         AuthUser userPO = authUserMapper.selectByUserName(loginUserDTO.getUserName());
         BeanUtils.copyPropertiesIgnoreNull(userPO, loginUserVO);
         loginUserVO.setPassword(userPO.getPassword());
         loginUserVO.setAccessToken(token.getValue());
         loginUserVO.setAccessTokenExpiresIn(token.getExpiresIn());
-        loginUserVO.setAccessTokenExpiration(token.getExpiration());
-        loginUserVO.setExpired(token.isExpired());
-        loginUserVO.setScope(token.getScope());
-        loginUserVO.setTokenType(token.getTokenType());
+//        loginUserVO.setAccessTokenExpiration(token.getExpiration());
+//        loginUserVO.setExpired(token.isExpired());
+//        loginUserVO.setScope(token.getScope());
+//        loginUserVO.setTokenType(token.getToken_type());
         loginUserVO.setRefreshToken(token.getRefreshToken().getValue());
-        loginUserVO.setRefreshTokenExpiration(token.getRefreshToken().getExpiration());
+//        loginUserVO.setRefreshTokenExpiration(token.getRefreshToken().getExpiration());
         //存储登录的用户
         redisUtil.set(loginUserVO.getAccessToken(),loginUserVO,TimeUnit.HOURS.toSeconds(1));
-        return ResponseVO.success(loginUserVO);
+        return loginUserVO;
     }
 
     /**

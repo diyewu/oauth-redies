@@ -50,7 +50,8 @@ public class LoginUserVO extends Base {
     /**
      * 使用范围
      */
-    private List<String> scope;
+//    private List<String> scope;
+    private Object scope;
 
     /**
      * token类型
@@ -132,11 +133,11 @@ public class LoginUserVO extends Base {
         this.accessTokenExpiresIn = accessTokenExpiresIn;
     }
 
-    public List<String> getScope() {
+    public Object getScope() {
         return scope;
     }
 
-    public void setScope(List<String> scope) {
+    public void setScope(Object scope) {
         this.scope = scope;
     }
 

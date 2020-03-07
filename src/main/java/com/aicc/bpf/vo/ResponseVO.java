@@ -2,6 +2,7 @@ package com.aicc.bpf.vo;
 
 import com.aicc.bpf.enums.ResponseEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.BindingResult;
@@ -13,10 +14,10 @@ import java.util.Locale;
 
 /**
  * @description:  数据格式返回统一
-
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResponseVO<T> implements Serializable {
+//@JsonIgnoreProperties
+public class ResponseVO implements Serializable {
 
     private static final long serialVersionUID = -437839076132402939L;
 
@@ -33,7 +34,7 @@ public class ResponseVO<T> implements Serializable {
     /**
      * 数据
      */
-    private T data;
+    private Object data;
 
     public ResponseVO() {}
 
@@ -42,7 +43,7 @@ public class ResponseVO<T> implements Serializable {
         this.message = msg;
     }
 
-    public ResponseVO(Integer code, String msg, T data) {
+    public ResponseVO(Integer code, String msg, Object data) {
         this.code = code;
         this.message = msg;
         this.data = data;
@@ -53,7 +54,7 @@ public class ResponseVO<T> implements Serializable {
         this.message = responseEnum.getMessage();
     }
 
-    public ResponseVO(ResponseEnum responseEnum, T data) {
+    public ResponseVO(ResponseEnum responseEnum, Object data) {
         this.code = responseEnum.getCode();
         this.message = responseEnum.getMessage();
         this.data = data;
@@ -63,12 +64,12 @@ public class ResponseVO<T> implements Serializable {
         return new ResponseVO(ResponseEnum.SUCCESS);
     }
 
-    public static <T> ResponseVO<T> success(T data){
-        return new ResponseVO<T>(ResponseEnum.SUCCESS, data);
+    public static  ResponseVO success(Object data){
+        return new ResponseVO(ResponseEnum.SUCCESS, data);
     }
 
-    public static <T> ResponseVO<T> success(int code, String msg){
-        return new ResponseVO<T>(code, msg);
+    public static ResponseVO success(int code, String msg){
+        return new ResponseVO(code, msg);
     }
 
     public static ResponseVO error(int code, String msg){
@@ -80,7 +81,7 @@ public class ResponseVO<T> implements Serializable {
     }
 
     public static ResponseVO error(ResponseEnum responseEnum, Object data){
-        return new ResponseVO<Object>(responseEnum, data);
+        return new ResponseVO(responseEnum, data);
     }
 
     public static ResponseVO errorParams(String msg){
