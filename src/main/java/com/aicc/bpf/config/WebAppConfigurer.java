@@ -30,9 +30,9 @@ public class WebAppConfigurer implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry
                 .addInterceptor(clientSecurityInterceptor)
-                .excludePathPatterns("/auth/user/login")
+                .excludePathPatterns("/auth/user/login","/demo/**","/error")
 //                .excludePathPatterns("/authlogin/**")
-                .excludePathPatterns("/demo/**")
+//                .excludePathPatterns()
                 .addPathPatterns("/**")
         ;
     }
