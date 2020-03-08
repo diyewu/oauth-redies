@@ -55,26 +55,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     @Override
     protected UserDetailsService userDetailsService() {
-        return new UserDetailsService(){
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                AuthUser authUser = authUserMapper.selectByUserName(username);
-                if(authUser == null){
-                    return null;
-                }
-                if(authUser != null){
-                    CustomUserDetail customUserDetail = new CustomUserDetail();
-                    customUserDetail.setUsername(authUser.getUser_name());
-                    customUserDetail.setPassword(authUser.getPassword());
-                    //TODO
-                    List<GrantedAuthority> list = AuthorityUtils.createAuthorityList("ADMIN");
-                    customUserDetail.setAuthorities(list);
-                    return customUserDetail;
-                }else {//返回空
-                    return null;
-                }
-
+        return username -> {
+            AuthUser authUser = authUserMapper.selectByUserName(username);
+            if(authUser == null){
+                return null;
             }
+            if(authUser != null){
+                CustomUserDetail customUserDetail = new CustomUserDetail();
+                customUserDetail.setUsername(authUser.getUser_name());
+                customUserDetail.setPassword(authUser.getPassword());
+                //TODO
+                List<GrantedAuthority> list = AuthorityUtils.createAuthorityList("ADMIN");
+                customUserDetail.setAuthorities(list);
+                return customUserDetail;
+            }else {//返回空
+                return null;
+            }
+
         };
     }
 
