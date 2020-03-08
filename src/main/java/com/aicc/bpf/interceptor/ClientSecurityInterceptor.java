@@ -15,6 +15,7 @@ public class ClientSecurityInterceptor implements HandlerInterceptor {
         //检查client正确性
         Boolean isVolid = SignUtils.checkSign(request);
         if(!isVolid){
+            //TODO 需要通过response来产生响应
             return false;
         }
         return true;

@@ -1,6 +1,5 @@
 package com.aicc.bpf.config;
 
-import com.aicc.bpf.commons.handler.CustomAuthExceptionHandler;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +23,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
@@ -54,15 +52,15 @@ public class OAuth2Config {
     @EnableResourceServer
     protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-        @Autowired
-        private CustomAuthExceptionHandler customAuthExceptionHandler;
+//        @Autowired
+//        private CustomAuthExceptionHandler customAuthExceptionHandler;
 
-        @Override
+        /*@Override
         public void configure(ResourceServerSecurityConfigurer resources) {
             resources.stateless(false)
                     .accessDeniedHandler(customAuthExceptionHandler)
                     .authenticationEntryPoint(customAuthExceptionHandler);
-        }
+        }*/
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
@@ -71,13 +69,13 @@ public class OAuth2Config {
                     //请求权限配置
                     .authorizeRequests()
                     //下边的路径放行,不需要经过认证
-                    .antMatchers("/oauth/*", "/auth/user/login").permitAll()
+                    .antMatchers("/oauth/*","/demo/**", "/auth/user/login").permitAll()
                     //OPTIONS请求不需要鉴权
                     .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    //用户的增删改接口只允许管理员访问
-                    .antMatchers(HttpMethod.POST, "/auth/user").hasAnyAuthority(ROLE_ADMIN)
-                    .antMatchers(HttpMethod.PUT, "/auth/user").hasAnyAuthority(ROLE_ADMIN)
-                    .antMatchers(HttpMethod.DELETE, "/auth/user").hasAnyAuthority(ROLE_ADMIN)
+//                    //用户的增删改接口只允许管理员访问
+//                    .antMatchers(HttpMethod.POST, "/auth/user").hasAnyAuthority(ROLE_ADMIN)
+//                    .antMatchers(HttpMethod.PUT, "/auth/user").hasAnyAuthority(ROLE_ADMIN)
+//                    .antMatchers(HttpMethod.DELETE, "/auth/user").hasAnyAuthority(ROLE_ADMIN)
                     //获取角色 权限列表接口只允许系统管理员及高级用户访问
                     .antMatchers(HttpMethod.GET, "/auth/role").hasAnyAuthority(ROLE_ADMIN)
                     //其余接口没有角色限制，但需要经过认证，只要携带token就可以放行
