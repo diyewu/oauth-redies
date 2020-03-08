@@ -3,6 +3,7 @@ package com.aicc.bpf.controller;
 import com.aicc.bpf.domain.Result.ResponseResult;
 import com.aicc.bpf.entity.AuthUser;
 import com.aicc.bpf.entity.LoginUserDTO;
+import com.aicc.bpf.entity.TestLogin;
 import com.aicc.bpf.service.RoleService;
 import com.aicc.bpf.service.UserService;
 import com.aicc.bpf.utils.AssertUtils;
@@ -91,9 +92,9 @@ public class AuthController {
      * @return
      */
     @PostMapping("user/login")
-    public ResponseResult login(LoginUserDTO loginUserDTO) throws JsonProcessingException {
-        LoginUserVO login = userService.login(loginUserDTO);
-        return ResultUtils.success(login);
+    public ResponseResult login(TestLogin loginUserDTO) throws JsonProcessingException {
+//        LoginUserVO login = userService.login(loginUserDTO);
+        return ResultUtils.success(loginUserDTO.toString());
     }
     /**
      * @description 用户注销
