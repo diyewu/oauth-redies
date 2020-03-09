@@ -92,9 +92,9 @@ public class AuthController {
      * @return
      */
     @PostMapping("user/login")
-    public ResponseResult login(TestLogin loginUserDTO) throws JsonProcessingException {
-//        LoginUserVO login = userService.login(loginUserDTO);
-        return ResultUtils.success(loginUserDTO.toString());
+    public ResponseResult login(LoginUserDTO loginUserDTO) throws JsonProcessingException {
+        LoginUserVO login = userService.login(loginUserDTO);
+        return ResultUtils.success(login);
     }
     /**
      * @description 用户注销

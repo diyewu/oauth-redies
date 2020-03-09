@@ -1,10 +1,12 @@
 package com.aicc.bpf.entity;
 
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * @description 登录用户传输参数
  */
+@JsonIgnoreProperties
 public class LoginUserDTO {
 
     /**
